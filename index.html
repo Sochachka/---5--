@@ -1,0 +1,325 @@
+{% extends "base.html" %}
+{% block title %}Калькулятор полиномов{% endblock %}
+{% block extra_css %}
+<style>
+    .equation-input {
+        margin-bottom: 20px;
+    }
+    .equation-input label {
+        font-weight: 600;
+        margin-bottom: 8px;
+        display: block;
+        color: #a13e5c;
+    }
+    .input-group {
+        display: flex;
+        gap: 10px;
+    }
+    .input-group input {
+        flex: 1;
+        padding: 14px 20px;
+        border: 2px solid #ffc0cb;
+        border-radius: 60px;
+        font-family: monospace;
+        background: rgba(255,255,255,0.9);
+        transition: 0.3s;
+        font-size: 1rem;
+    }
+    .input-group input:focus {
+        outline: none;
+        border-color: #ff7a9e;
+        box-shadow: 0 0 0 3px rgba(255,105,180,0.2);
+    }
+    .input-group button {
+        background: linear-gradient(135deg, #ff9eb0, #ff7a9e);
+        border: none;
+        padding: 0 28px;
+        border-radius: 60px;
+        font-weight: 600;
+        color: white;
+        cursor: pointer;
+        transition: 0.2s;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 1rem;
+    }
+    .input-group button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(255,105,180,0.4);
+    }
+
+    .keyboard {
+        background: rgba(255,240,245,0.7);
+        border-radius: 32px;
+        padding: 15px;
+        margin-bottom: 20px;
+    }
+    .keyboard-title {
+        font-size: 0.8rem;
+        font-weight: 600;
+        color: #b16d85;
+        margin-bottom: 10px;
+    }
+    .keyboard-buttons {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-bottom: 15px;
+    }
+    .key-btn {
+        background: white;
+        border: 1px solid #ffc0cb;
+        border-radius: 40px;
+        padding: 8px 14px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: 0.2s;
+        color: #a13e5c;
+        font-family: monospace;
+    }
+    .key-btn:hover {
+        background: #ffe0e8;
+        transform: translateY(-1px);
+    }
+    .number-btn:hover {
+        transform: scale(1.05);
+        background: #ff9eb0;
+        color: white;
+    }
+    .func-btn {
+        background: #ffe0e8;
+        border-color: #ff99aa;
+        font-family: monospace;
+    }
+    .func-btn:hover {
+        background: #ffd0dc;
+    }
+
+    .current-answer {
+        background: linear-gradient(135deg, rgba(255,220,230,0.95), rgba(255,200,215,0.95));
+        border-radius: 28px;
+        padding: 20px;
+        margin-bottom: 25px;
+        border: 1px solid #ffb7c5;
+        box-shadow: 0 8px 20px rgba(255,105,180,0.2);
+    }
+    .current-answer h3 {
+        font-family: 'Pacifico', cursive;
+        font-size: 1.6rem;
+        color: #a13e5c;
+        margin-bottom: 15px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    .answer-roots {
+        font-size: 1.1rem;
+        line-height: 1.5;
+        background: rgba(255,255,240,0.6);
+        padding: 15px;
+        border-radius: 24px;
+        font-family: monospace;
+    }
+    .answer-roots p {
+        margin: 5px 0;
+    }
+    .answer-roots strong {
+        color: #b94b6b;
+    }
+
+    .history-item {
+        background: white;
+        border-radius: 20px;
+        padding: 12px;
+        margin-bottom: 10px;
+        border: 1px solid #ffd9e8;
+        transition: 0.2s;
+    }
+    .history-item:hover {
+        transform: translateX(3px);
+        border-color: #ff99aa;
+    }
+    .history-equation {
+        font-family: monospace;
+        font-size: 0.85rem;
+        color: #a13e5c;
+        font-weight: 500;
+    }
+    .history-roots {
+        font-size: 0.8rem;
+        color: #666;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="content-card">
+    <h1>Полиномиальный решатель</h1>
+    <div class="subtitle">С поддержкой тригонометрических и других функций 🧮</div>
+
+    <div class="equation-input">
+        <label><i class="fas fa-pen-fancy"></i> Введите уравнение:</label>
+        <div class="input-group">
+            <input type="text" id="equationInput" placeholder="Мяу.. напишите уравнение" value="x^2 - 3x + 2 = 0">
+            <button id="solveBtn"><i class="fas fa-calculator"></i> Решить</button>
+        </div>
+    </div>
+
+    <div class="keyboard">
+        <div class="keyboard-title"><i class="fas fa-keyboard"></i> ✨ Быстрый ввод ✨</div>
+        <div class="keyboard-buttons">
+            <button class="key-btn" data-char="π">π</button>
+            <button class="key-btn" data-char="e">e</button>
+            <button class="key-btn" data-char="i">i</button>
+            <button class="key-btn" data-char="^">^</button>
+            <button class="key-btn" data-char="+">+</button>
+            <button class="key-btn" data-char="-">-</button>
+            <button class="key-btn" data-char="=">=</button>
+            <button class="key-btn" data-char="x">x</button>
+            <button class="key-btn" data-char="(">(</button>
+            <button class="key-btn" data-char=")">)</button>
+        </div>
+        <div class="keyboard-title"><i class="fas fa-function"></i> 📐 Функции</div>
+        <div class="keyboard-buttons">
+            <button class="key-btn func-btn" data-char="sin(">sin(</button>
+            <button class="key-btn func-btn" data-char="cos(">cos(</button>
+            <button class="key-btn func-btn" data-char="tan(">tan(</button>
+            <button class="key-btn func-btn" data-char="tg(">tg(</button>
+            <button class="key-btn func-btn" data-char="cot(">cot(</button>
+            <button class="key-btn func-btn" data-char="ln(">ln(</button>
+            <button class="key-btn func-btn" data-char="log(">log(</button>
+            <button class="key-btn func-btn" data-char="exp(">exp(</button>
+            <button class="key-btn func-btn" data-char="sqrt(">sqrt(</button>
+            <button class="key-btn func-btn" data-char="abs(">abs(</button>
+        </div>
+        <div class="keyboard-title"><i class="fas fa-hashtag"></i> 🔢 Цифры</div>
+        <div class="keyboard-buttons">
+            <button class="key-btn number-btn" data-char="0">0</button>
+            <button class="key-btn number-btn" data-char="1">1</button>
+            <button class="key-btn number-btn" data-char="2">2</button>
+            <button class="key-btn number-btn" data-char="3">3</button>
+            <button class="key-btn number-btn" data-char="4">4</button>
+            <button class="key-btn number-btn" data-char="5">5</button>
+            <button class="key-btn number-btn" data-char="6">6</button>
+            <button class="key-btn number-btn" data-char="7">7</button>
+            <button class="key-btn number-btn" data-char="8">8</button>
+            <button class="key-btn number-btn" data-char="9">9</button>
+            <button class="key-btn" data-char=".">.</button>
+            <button class="key-btn clear-btn" id="clearInputBtn">Очистить</button>
+        </div>
+    </div>
+
+    <div class="current-answer" id="currentAnswer">
+        <h3><i class="fas fa-star"></i> Ответ</h3>
+        <div class="answer-roots">
+            <p style="color: #b16d85;">Введите уравнение и нажмите «Решить»</p>
+        </div>
+    </div>
+</div>
+
+<div class="content-card">
+    <h2>📜 История решений</h2>
+    <div id="historyList" style="max-height: 300px; overflow-y: auto;">
+        <p style="color: #999; text-align: center;">История пуста</p>
+    </div>
+    <button id="clearHistoryBtn" style="margin-top: 15px; background: none; border: 1px solid #ffc0cb; padding: 6px 18px; border-radius: 30px; cursor: pointer;">Очистить историю</button>
+</div>
+
+<script>
+    let history = [];
+    
+    function loadHistory() {
+        const saved = localStorage.getItem('polynomial_history');
+        if (saved) { try { history = JSON.parse(saved); } catch(e) {} }
+        renderHistory();
+    }
+    
+    function saveHistory() {
+        localStorage.setItem('polynomial_history', JSON.stringify(history));
+        renderHistory();
+    }
+    
+    function addToHistory(equation, resultText) {
+        history.unshift({ equation: equation, result: resultText });
+        if (history.length > 20) history.pop();
+        saveHistory();
+    }
+    
+    function clearHistory() { history = []; saveHistory(); }
+    
+    function renderHistory() {
+        const container = document.getElementById('historyList');
+        if (!container) return;
+        if (history.length === 0) {
+            container.innerHTML = '<p style="color: #999; text-align: center;">История пуста</p>';
+            return;
+        }
+        let html = '';
+        for (let item of history) {
+            html += `<div class="history-item">
+                        <div class="history-equation">${escapeHtml(item.equation)}</div>
+                        <div class="history-roots">${item.result}</div>
+                     </div>`;
+        }
+        container.innerHTML = html;
+    }
+    
+    function escapeHtml(str) {
+        return str.replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
+        });
+    }
+
+    async function solveEquation() {
+        const equation = document.getElementById('equationInput').value.trim();
+        if (!equation) {
+            document.getElementById('currentAnswer').innerHTML = `<h3><i class="fas fa-star"></i> Ответ</h3><div class="answer-roots"><p>🐱 Мур... напишите уравнение!</p></div>`;
+            return;
+        }
+        document.getElementById('currentAnswer').innerHTML = `<h3><i class="fas fa-star"></i> Ответ</h3><div class="answer-roots"><p><i class="fas fa-spinner fa-pulse"></i> Решаем... 🐾</p></div>`;
+        try {
+            const response = await fetch('/solve', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ equation: equation }) });
+            const data = await response.json();
+            if (data.success) {
+                let resultText = '';
+                if (data.message) resultText = data.message;
+                else if (data.roots && data.roots.length) resultText = data.roots.map((r,i)=>`x${i+1} = ${r}`).join(', ');
+                else resultText = 'Корни не найдены';
+                const displayText = data.message || (data.roots.length ? resultText : 'Корни не найдены');
+                document.getElementById('currentAnswer').innerHTML = `<h3><i class="fas fa-star"></i> Ответ</h3><div class="answer-roots"><p><strong>Степень:</strong> ${data.degree}</p><p><strong>Корни:</strong> ${displayText}</p></div>`;
+                addToHistory(equation, displayText);
+            } else {
+                document.getElementById('currentAnswer').innerHTML = `<h3><i class="fas fa-star"></i> Ответ</h3><div class="answer-roots"><p>😿 Ошибка: ${data.error}</p></div>`;
+            }
+        } catch (err) {
+            document.getElementById('currentAnswer').innerHTML = `<h3><i class="fas fa-star"></i> Ответ</h3><div class="answer-roots"><p>😿 Ошибка: ${err.message}</p></div>`;
+        }
+    }
+
+    document.getElementById('solveBtn').addEventListener('click', solveEquation);
+    document.getElementById('clearHistoryBtn').addEventListener('click', () => { if(confirm('Очистить историю?')) clearHistory(); });
+    document.getElementById('clearInputBtn').addEventListener('click', () => { document.getElementById('equationInput').value = ''; document.getElementById('equationInput').focus(); });
+    
+    document.querySelectorAll('.key-btn').forEach(btn => {
+        const char = btn.getAttribute('data-char');
+        if (char && btn.id !== 'clearInputBtn') {
+            btn.addEventListener('click', () => {
+                const input = document.getElementById('equationInput');
+                const start = input.selectionStart;
+                const end = input.selectionEnd;
+                const newText = input.value.substring(0, start) + char + input.value.substring(end);
+                input.value = newText;
+                input.focus();
+                input.setSelectionRange(start + char.length, start + char.length);
+            });
+        }
+    });
+    
+    document.getElementById('equationInput').addEventListener('keypress', (e) => { if(e.key === 'Enter') solveEquation(); });
+    loadHistory();
+</script>
+{% endblock %}

@@ -1,0 +1,164 @@
+{% extends "base.html" %}
+{% block title %}Инструкция{% endblock %}
+{% block extra_css %}
+<style>
+    .instruction-step {
+        display: flex;
+        gap: 20px;
+        align-items: center;
+        margin: 25px 0;
+        background: rgba(255,240,245,0.5);
+        border-radius: 28px;
+        padding: 15px;
+    }
+    .step-number {
+        font-family: 'Pacifico', cursive;
+        font-size: 2rem;
+        width: 60px;
+        height: 60px;
+        background: #ffd9e8;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #b94b6b;
+    }
+    .step-text {
+        flex: 1;
+    }
+    .example {
+        background: #fff;
+        padding: 12px;
+        border-radius: 24px;
+        font-family: monospace;
+        margin-top: 8px;
+    }
+    .func-table {
+        background: #fff;
+        border-radius: 24px;
+        padding: 15px;
+        margin: 15px 0;
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 10px;
+    }
+    .func-item {
+        background: #fff0f5;
+        padding: 8px 12px;
+        border-radius: 20px;
+        font-family: monospace;
+        font-size: 0.9rem;
+    }
+    .func-item code {
+        color: #d45c7a;
+        font-weight: bold;
+    }
+    .warning-box {
+        background: #fff0f5;
+        border-left: 4px solid #ff7a9e;
+        padding: 15px;
+        border-radius: 20px;
+        margin: 20px 0;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="content-card">
+    <h1>📖 Инструкция</h1>
+    <div class="subtitle">Как пользоваться нашим решателем уравнений</div>
+
+    <div class="instruction-step">
+        <div class="step-number">1</div>
+        <div class="step-text">
+            <strong>Введите уравнение</strong> – используйте переменную <code>x</code>. Примеры:
+            <div class="example">x^2 - 3x + 2 = 0</div>
+            <div class="example">2x^3 + 4x = 0</div>
+            <div class="example">x^2 + 1 = 0  (даст комплексные корни)</div>
+            <div class="example">sin(x) = 0.5</div>
+            <div class="example">tan(x) = 1</div>
+            <div class="example">cos(x) = 0</div>
+        </div>
+    </div>
+
+    <div class="instruction-step">
+        <div class="step-number">2</div>
+        <div class="step-text">
+            <strong>Поддерживаемые функции</strong> – можно использовать в уравнениях:
+            <div class="func-table">
+                <div class="func-item"><code>sin(x)</code> — синус</div>
+                <div class="func-item"><code>cos(x)</code> — косинус</div>
+                <div class="func-item"><code>tan(x)</code> или <code>tg(x)</code> — тангенс</div>
+                <div class="func-item"><code>cot(x)</code> или <code>ctg(x)</code> — котангенс</div>
+                <div class="func-item"><code>ln(x)</code> — натуральный логарифм</div>
+                <div class="func-item"><code>log(x)</code> — десятичный логарифм</div>
+                <div class="func-item"><code>exp(x)</code> — экспонента (e^x)</div>
+                <div class="func-item"><code>sqrt(x)</code> — квадратный корень</div>
+                <div class="func-item"><code>abs(x)</code> — модуль</div>
+                <div class="func-item"><code>π</code> или <code>pi</code> — число Пи</div>
+                <div class="func-item"><code>e</code> — число Эйлера</div>
+                <div class="func-item"><code>i</code> — мнимая единица</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="instruction-step">
+        <div class="step-number">3</div>
+        <div class="step-text">
+            <strong>Комплексные числа</strong> – пишите <code>i</code> (латинскую). Примеры:
+            <div class="example">(1+2i)x^2 + (3-4i)x + 5i = 0</div>
+            <div class="example">x^2 + i = 0</div>
+            <div class="example">sin(x) = 2i</div>
+        </div>
+    </div>
+
+    <div class="instruction-step">
+        <div class="step-number">4</div>
+        <div class="step-text">
+            <strong>Быстрый ввод</strong> – используйте клавиатуру под полем ввода:
+            <div class="example">
+                • Цифры и основные операции: <code>+ - * / ^ ( )</code><br>
+                • Константы: <code>π e i</code><br>
+                • Функции: <code>sin cos tan ln exp sqrt abs</code>
+            </div>
+        </div>
+    </div>
+
+    <div class="instruction-step">
+        <div class="step-number">5</div>
+        <div class="step-text">
+            <strong>Нажмите «Решить»</strong> – результат появится в блоке "Ответ". Для тригонометрических уравнений выводятся красивые формулы:
+            <div class="example">
+                • <code>tan(x) = 1</code> → <code>x = π/4 + π·k, k ∈ ℤ</code><br>
+                • <code>sin(x) = 0.5</code> → <code>x = π/6 + 2π·k</code> и <code>x = 5π/6 + 2π·k</code><br>
+                • <code>cos(x) = 0</code> → <code>x = ±π/2 + 2π·k</code>
+            </div>
+        </div>
+    </div>
+
+    <div class="instruction-step">
+        <div class="step-number">6</div>
+        <div class="step-text">
+            <strong>История</strong> – все ваши решения сохраняются в браузере. Вы можете очистить историю кнопкой внизу.
+        </div>
+    </div>
+
+    <div class="warning-box">
+        <i class="fas fa-info-circle"></i> <strong>Важно:</strong>
+        <ul style="margin-top: 10px; margin-left: 20px;">
+            <li>Для полиномов до 5-й степени используются точные и численные методы</li>
+            <li>Тригонометрические уравнения решаются численно, но для простых случаев выводятся формулы</li>
+            <li>Если корней много, показываются только первые несколько с формулой периода</li>
+            <li>Все вычисления производятся на сервере с использованием метода Ньютона</li>
+        </ul>
+    </div>
+
+    <div class="instruction-step">
+        <div class="step-number">🎮</div>
+        <div class="step-text">
+            <strong>Бонус – игра с динозавриком!</strong><br>
+            На странице <strong>"О нас"</strong> вы найдёте игру в стиле Chrome Dino Runner. Управление: пробел или стрелка вверх. Попробуйте побить рекорд!
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Мур-решатель{% endblock %}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Quicksand:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Quicksand', sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #ffe6f0 0%, #ffc8dd 50%, #ffb0c4 100%);
+            position: relative;
+            overflow-x: hidden;
+            padding: 20px;
+        }
+
+        .floating {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+        .floating i, .floating span {
+            position: absolute;
+            color: rgba(255, 105, 180, 0.2);
+            font-size: 24px;
+            animation: float 14s infinite linear;
+        }
+        @keyframes float {
+            0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 0.6; }
+            90% { opacity: 0.6; }
+            100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
+        }
+
+        .navbar {
+            max-width: 1200px;
+            margin: 0 auto 20px auto;
+            background: rgba(255, 248, 250, 0.92);
+            backdrop-filter: blur(8px);
+            border-radius: 60px;
+            padding: 12px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            border: 1px solid rgba(255,220,230,0.7);
+            position: relative;
+            z-index: 2;
+        }
+        .logo a {
+            font-family: 'Pacifico', cursive;
+            font-size: 1.6rem;
+            color: #d45c7a;
+            text-decoration: none;
+        }
+        .nav-links {
+            display: flex;
+            gap: 25px;
+        }
+        .nav-links a {
+            text-decoration: none;
+            color: #a13e5c;
+            font-weight: 600;
+            transition: 0.2s;
+            padding: 5px 12px;
+            border-radius: 30px;
+        }
+        .nav-links a:hover, .nav-links a.active {
+            background: #ffd9e8;
+            color: #b94b6b;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 2;
+        }
+
+        .content-card {
+            background: rgba(255, 248, 250, 0.88);
+            backdrop-filter: blur(12px);
+            border-radius: 48px;
+            padding: 30px;
+            box-shadow: 0 20px 35px rgba(0,0,0,0.1);
+            border: 1px solid rgba(255,255,255,0.5);
+            margin-bottom: 20px;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            padding: 20px;
+            background: rgba(255,248,250,0.85);
+            border-radius: 30px;
+            font-size: 0.75rem;
+            color: #b16d85;
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+            flex-wrap: wrap;
+        }
+
+        h1 {
+            font-family: 'Pacifico', cursive;
+            font-size: 2.2rem;
+            text-align: center;
+            color: #d45c7a;
+            margin-bottom: 15px;
+        }
+
+        h2 {
+            font-family: 'Pacifico', cursive;
+            font-size: 1.5rem;
+            color: #b94b6b;
+            margin: 20px 0 10px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #b16d85;
+            margin-bottom: 30px;
+            font-size: 1rem;
+        }
+
+        button, .key-btn {
+            font-family: 'Quicksand', sans-serif;
+        }
+
+        @media (max-width: 700px) {
+            .navbar {
+                flex-direction: column;
+                gap: 10px;
+                border-radius: 30px;
+            }
+            .content-card {
+                padding: 20px;
+            }
+        }
+    </style>
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+<div class="floating" id="floatingElements"></div>
+
+<div class="navbar">
+    <div class="logo"><a href="/">🐱 Мур-решатель</a></div>
+    <div class="nav-links">
+        <a href="/" class="{% if request.path == '/' %}active{% endif %}">Калькулятор</a>
+        <a href="/instructions" class="{% if request.path == '/instructions' %}active{% endif %}">Инструкция</a>
+        <a href="/about" class="{% if request.path == '/about' %}active{% endif %}">О нас</a>
+    </div>
+</div>
+
+<div class="container">
+    {% block content %}{% endblock %}
+</div>
+
+<div class="footer">
+    <span>© 2026 СПбГУТ, ИТиПИ, группа ИВТ-2511</span>
+    <span>Все права защищены 🐾</span>
+    <span><i class="fas fa-cat"></i> Демченко С. & Шеломенцева О.</span>
+</div>
+
+<script>
+    function createFloatingElements() {
+        const container = document.getElementById('floatingElements');
+        const icons = ['🐱', '🐾', '❤️', '⭐', '🌸', '✨', '🐈', '🎓', '💻'];
+        for (let i = 0; i < 35; i++) {
+            const el = document.createElement('span');
+            el.textContent = icons[Math.floor(Math.random() * icons.length)];
+            el.style.left = Math.random() * 100 + '%';
+            el.style.animationDuration = 10 + Math.random() * 15 + 's';
+            el.style.animationDelay = Math.random() * 20 + 's';
+            el.style.fontSize = 16 + Math.random() * 26 + 'px';
+            el.style.opacity = 0.15 + Math.random() * 0.25;
+            container.appendChild(el);
+        }
+    }
+    createFloatingElements();
+</script>
+{% block extra_js %}{% endblock %}
+</body>
+</html>
